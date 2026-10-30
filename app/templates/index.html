@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#102a43">
+    <title>Casa Nativa | Loja</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="announcement">Peças escolhidas para deixar a casa com a sua cara <span>✦</span> Frete grátis acima de R$ 299</div>
+    <header class="site-header">
+        <a class="brand" href="{{ url_for('auth.index') }}" aria-label="Casa Nativa, início"><span class="brand-mark">cn</span><span>casa<span class="brand-light">nativa</span></span></a>
+        <nav class="main-nav" aria-label="Navegação principal">
+            <a href="#novidades">Novidades</a><a href="#colecao">Coleção</a><a href="#sobre">Nossa história</a>
+        </nav>
+        <div class="header-actions">
+            {% if usuario %}
+                <div class="profile-chip"><span class="avatar">{{ usuario['nome'][0]|upper }}</span><span class="profile-name">Olá, {{ usuario['nome'] }}</span><span class="online-indicator"><i></i> Online</span></div>
+                <form action="{{ url_for('auth.sair') }}" method="post"><button class="text-button" type="submit">Sair</button></form>
+            {% else %}
+                <a class="text-button" href="{{ url_for('auth.index', abrir='entrar') }}">Entrar</a>
+                <a class="button button-small" href="{{ url_for('auth.index', abrir='cadastro') }}">Criar conta</a>
+            {% endif %}
+            <button class="bag-button" aria-label="Sacola de compras">♧<span>0</span></button>
+        </div>
+    </header>
+
+    <main>
+        {% with mensagens = get_flashed_messages(with_categories=true) %}
+            {% if mensagens %}<div class="flash-stack" role="status">{% for categoria, mensagem in mensagens %}<div class="flash {{ categoria }}">{{ mensagem }}</div>{% endfor %}</div>{% endif %}
+        {% endwith %}
+
+        <section class="hero" id="novidades">
+            <div class="hero-copy"><p class="eyebrow">DESACELERE. SINTA-SE EM CASA.</p><h1>Um espaço<br>com a sua <em>essência.</em></h1><p class="hero-description">Objetos, texturas e pequenos detalhes que transformam a rotina em um lugar melhor de estar.</p><a class="button" href="#colecao">Descobrir a coleção <span>→</span></a><div class="hero-note"><span>✳</span> Feito para durar. Escolhido para você.</div></div>
+            <div class="hero-art" aria-label="Composição de decoração em tons naturais">
+                <div class="art-sun"></div><div class="art-frame"><div class="frame-arch"></div><div class="frame-stem"></div></div><div class="art-vase vase-one"><i></i></div><div class="art-vase vase-two"><i></i></div><div class="art-table"></div><div class="art-book"></div><div class="art-label">coleção<br><strong>raízes</strong> <span>— 2025</span></div>
+            </div>
+        </section>
+
+        <section class="collection" id="colecao">
+            <div class="section-heading"><div><p class="eyebrow">ESCOLHAS DA ESTAÇÃO</p><h2>Peças para ficar.</h2></div><a href="#produtos" class="all-link">Ver coleção completa <span>→</span></a></div>
+            <div class="category-row"><a class="category active" href="#produtos">Tudo <span>04</span></a><a class="category" href="#produtos">Decoração</a><a class="category" href="#produtos">Mesa posta</a><a class="category" href="#produtos">Têxteis</a><a class="category" href="#produtos">Iluminação</a></div>
+            <div class="product-grid" id="produtos">
+                <article class="product-card"><div class="product-image image-ceramic"><span class="product-tag">MAIS AMADO</span><div class="ceramic-shape"></div><button aria-label="Favoritar Vaso Aurora" class="heart">♡</button></div><p class="product-type">CERÂMICA ARTESANAL</p><h3>Vaso Aurora</h3><div class="product-bottom"><span>R$ 189,00</span><button>Adicionar <b>+</b></button></div></article>
+                <article class="product-card"><div class="product-image image-lamp"><span class="product-tag muted-tag">EDIÇÃO LIMITADA</span><div class="lamp-shape"><i></i></div><button aria-label="Favoritar Luminária Lua" class="heart">♡</button></div><p class="product-type">MADEIRA &amp; LINHO</p><h3>Luminária Lua</h3><div class="product-bottom"><span>R$ 349,00</span><button>Adicionar <b>+</b></button></div></article>
+                <article class="product-card"><div class="product-image image-bowl"><div class="bowl-shape"></div><button aria-label="Favoritar Tigela Terra" class="heart">♡</button></div><p class="product-type">FEITO À MÃO</p><h3>Tigela Terra</h3><div class="product-bottom"><span>R$ 129,00</span><button>Adicionar <b>+</b></button></div></article>
+                <article class="product-card"><div class="product-image image-throw"><div class="throw-shape"></div><button aria-label="Favoritar Manta Brisa" class="heart">♡</button></div><p class="product-type">ALGODÃO NATURAL</p><h3>Manta Brisa</h3><div class="product-bottom"><span>R$ 259,00</span><button>Adicionar <b>+</b></button></div></article>
+            </div>
+        </section>
+        <section class="story" id="sobre"><span>CASA NATIVA — DESDE 2020</span><p>Menos pressa, mais presença.<br><em>O morar também é sentir.</em></p><a href="#colecao">Conheça nosso jeito <span>→</span></a></section>
+    </main>
+    <footer><a class="brand footer-brand" href="#"> <span class="brand-mark">cn</span><span>casa<span class="brand-light">nativa</span></span></a><span>Design consciente, feito com afeto.</span><span>© 2025 Casa Nativa</span></footer>
+
+    {% if request.args.get('abrir') in ['entrar', 'cadastro'] %}
+    <div class="modal-backdrop" role="presentation" onclick="if(event.target===this) location.href='{{ url_for('auth.index') }}'">
+        <section class="auth-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            <a class="modal-close" href="{{ url_for('auth.index') }}" aria-label="Fechar">×</a>
+            <a class="brand modal-brand" href="{{ url_for('auth.index') }}"><span class="brand-mark">cn</span><span>casa<span class="brand-light">nativa</span></span></a>
+            {% if request.args.get('abrir') == 'entrar' %}
+                <p class="eyebrow">BOM TER VOCÊ DE VOLTA</p><h2 id="modal-title">Entre na sua conta</h2><p class="modal-subtitle">Acesse seus pedidos e descubra novidades feitas para você.</p>
+                <form class="auth-form" action="{{ url_for('auth.entrar') }}" method="post">
+                    <label for="login-cpf">CPF</label><input id="login-cpf" name="cpf" type="text" inputmode="numeric" autocomplete="username" placeholder="000.000.000-00" required>
+                    <label for="login-senha">Senha</label><input id="login-senha" name="senha" type="password" autocomplete="current-password" placeholder="Sua senha" required>
+                    <button class="button submit-button" type="submit">Entrar <span>→</span></button>
+                </form>
+                <p class="switch-auth">Ainda não tem conta? <a href="{{ url_for('auth.index', abrir='cadastro') }}">Faça seu cadastro</a></p>
+            {% else %}
+                <p class="eyebrow">SEU CANTINHO NA CASA NATIVA</p><h2 id="modal-title">Crie sua conta</h2><p class="modal-subtitle">Cadastre-se para acompanhar seus pedidos e salvar seus favoritos.</p>
+                <form class="auth-form register-form" action="{{ url_for('auth.cadastro') }}" method="post">
+                    <div class="form-pair"><div><label for="nome">Nome</label><input id="nome" name="nome" autocomplete="given-name" placeholder="Seu nome" required></div><div><label for="sobrenome">Sobrenome</label><input id="sobrenome" name="sobrenome" autocomplete="family-name" placeholder="Seu sobrenome" required></div></div>
+                    <label for="cad-cpf">CPF</label><input id="cad-cpf" name="cpf" inputmode="numeric" autocomplete="username" placeholder="000.000.000-00" required>
+                    <label for="telefone">Telefone</label><input id="telefone" name="telefone" type="tel" autocomplete="tel" placeholder="(11) 99999-9999" required>
+                    <label for="email">E-mail</label><input id="email" name="email" type="email" autocomplete="email" placeholder="voce@email.com" required>
+                    <label for="senha">Senha</label><input id="senha" name="senha" type="password" autocomplete="new-password" placeholder="Crie uma senha" minlength="6" required>
+                    <button class="button submit-button" type="submit">Criar minha conta <span>→</span></button>
+                </form>
+                <p class="switch-auth">Já tem uma conta? <a href="{{ url_for('auth.index', abrir='entrar') }}">Entre aqui</a></p>
+            {% endif %}
+        </section>
+    </div>
+    {% endif %}
+</body>
+</html>
