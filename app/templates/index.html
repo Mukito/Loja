@@ -22,7 +22,7 @@
                 <a class="text-button" href="{{ url_for('auth.index', abrir='entrar') }}">Entrar</a>
                 <a class="button button-small" href="{{ url_for('auth.index', abrir='cadastro') }}">Criar conta</a>
             {% endif %}
-            <button class="bag-button" aria-label="Sacola de compras">♧<span>0</span></button>
+            <button class="bag-button" id="cart-toggle" aria-label="Abrir sacola de compras">♧<span id="cart-count">0</span></button>
         </div>
     </header>
 
@@ -42,14 +42,18 @@
             <div class="section-heading"><div><p class="eyebrow">ESCOLHAS DA ESTAÇÃO</p><h2>Peças para ficar.</h2></div><a href="#produtos" class="all-link">Ver coleção completa <span>→</span></a></div>
             <div class="category-row"><a class="category active" href="#produtos">Tudo <span>04</span></a><a class="category" href="#produtos">Decoração</a><a class="category" href="#produtos">Mesa posta</a><a class="category" href="#produtos">Têxteis</a><a class="category" href="#produtos">Iluminação</a></div>
             <div class="product-grid" id="produtos">
-                <article class="product-card"><div class="product-image image-ceramic"><span class="product-tag">MAIS AMADO</span><div class="ceramic-shape"></div><button aria-label="Favoritar Vaso Aurora" class="heart">♡</button></div><p class="product-type">CERÂMICA ARTESANAL</p><h3>Vaso Aurora</h3><div class="product-bottom"><span>R$ 189,00</span><button>Adicionar <b>+</b></button></div></article>
-                <article class="product-card"><div class="product-image image-lamp"><span class="product-tag muted-tag">EDIÇÃO LIMITADA</span><div class="lamp-shape"><i></i></div><button aria-label="Favoritar Luminária Lua" class="heart">♡</button></div><p class="product-type">MADEIRA &amp; LINHO</p><h3>Luminária Lua</h3><div class="product-bottom"><span>R$ 349,00</span><button>Adicionar <b>+</b></button></div></article>
-                <article class="product-card"><div class="product-image image-bowl"><div class="bowl-shape"></div><button aria-label="Favoritar Tigela Terra" class="heart">♡</button></div><p class="product-type">FEITO À MÃO</p><h3>Tigela Terra</h3><div class="product-bottom"><span>R$ 129,00</span><button>Adicionar <b>+</b></button></div></article>
-                <article class="product-card"><div class="product-image image-throw"><div class="throw-shape"></div><button aria-label="Favoritar Manta Brisa" class="heart">♡</button></div><p class="product-type">ALGODÃO NATURAL</p><h3>Manta Brisa</h3><div class="product-bottom"><span>R$ 259,00</span><button>Adicionar <b>+</b></button></div></article>
+                <article class="product-card"><div class="product-image image-ceramic"><span class="product-tag">MAIS AMADO</span><div class="ceramic-shape"></div><button aria-label="Favoritar Vaso Aurora" class="heart">♡</button></div><p class="product-type">CERÂMICA ARTESANAL</p><h3>Vaso Aurora</h3><div class="product-bottom"><span>R$ 189,00</span><button class="add-to-cart" data-product-id="vaso-aurora">Adicionar <b>+</b></button></div></article>
+                <article class="product-card"><div class="product-image image-lamp"><span class="product-tag muted-tag">EDIÇÃO LIMITADA</span><div class="lamp-shape"><i></i></div><button aria-label="Favoritar Luminária Lua" class="heart">♡</button></div><p class="product-type">MADEIRA &amp; LINHO</p><h3>Luminária Lua</h3><div class="product-bottom"><span>R$ 349,00</span><button class="add-to-cart" data-product-id="luminaria-lua">Adicionar <b>+</b></button></div></article>
+                <article class="product-card"><div class="product-image image-bowl"><div class="bowl-shape"></div><button aria-label="Favoritar Tigela Terra" class="heart">♡</button></div><p class="product-type">FEITO À MÃO</p><h3>Tigela Terra</h3><div class="product-bottom"><span>R$ 129,00</span><button class="add-to-cart" data-product-id="tigela-terra">Adicionar <b>+</b></button></div></article>
+                <article class="product-card"><div class="product-image image-throw"><div class="throw-shape"></div><button aria-label="Favoritar Manta Brisa" class="heart">♡</button></div><p class="product-type">ALGODÃO NATURAL</p><h3>Manta Brisa</h3><div class="product-bottom"><span>R$ 259,00</span><button class="add-to-cart" data-product-id="manta-brisa">Adicionar <b>+</b></button></div></article>
             </div>
         </section>
         <section class="story" id="sobre"><span>CASA NATIVA — DESDE 2020</span><p>Menos pressa, mais presença.<br><em>O morar também é sentir.</em></p><a href="#colecao">Conheça nosso jeito <span>→</span></a></section>
     </main>
+    <div class="cart-layer" id="cart-layer" hidden>
+        <div class="cart-scrim" data-close-cart></div>
+        <aside class="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title"><div class="cart-heading"><div><p class="eyebrow">CASA NATIVA</p><h2 id="cart-title">Sua sacola</h2></div><button class="cart-close" data-close-cart aria-label="Fechar sacola">×</button></div><div class="cart-items" id="cart-items"></div><div class="cart-empty" id="cart-empty">Sua sacola está vazia.<br><span>Escolha uma peça para começar.</span></div><div class="cart-footer"><div class="cart-subtotal"><span>Subtotal</span><strong id="cart-subtotal">R$ 0,00</strong></div><p>Entrega calculada no fechamento do pedido.</p><a class="button cart-checkout" id="cart-checkout" href="{{ url_for('store.checkout') }}">Finalizar compra <span>→</span></a><a class="continue-shopping" href="#colecao" data-close-cart>Continuar comprando</a></div></aside>
+    </div>
     <footer><a class="brand footer-brand" href="#"> <span class="brand-mark">cn</span><span>casa<span class="brand-light">nativa</span></span></a><span>Design consciente, feito com afeto.</span><span>© 2025 Casa Nativa</span></footer>
 
     {% if request.args.get('abrir') in ['entrar', 'cadastro'] %}
@@ -62,6 +66,7 @@
                 <form class="auth-form" action="{{ url_for('auth.entrar') }}" method="post">
                     <label for="login-cpf">CPF</label><input id="login-cpf" name="cpf" type="text" inputmode="numeric" autocomplete="username" placeholder="000.000.000-00" required>
                     <label for="login-senha">Senha</label><input id="login-senha" name="senha" type="password" autocomplete="current-password" placeholder="Sua senha" required>
+                    <input type="hidden" name="next" value="{{ request.args.get('next', '') }}">
                     <button class="button submit-button" type="submit">Entrar <span>→</span></button>
                 </form>
                 <p class="switch-auth">Ainda não tem conta? <a href="{{ url_for('auth.index', abrir='cadastro') }}">Faça seu cadastro</a></p>
@@ -80,5 +85,7 @@
         </section>
     </div>
     {% endif %}
+    <script>window.CASA_PRODUCTS = {{ produtos|tojson }};</script>
+    <script src="{{ url_for('static', filename='store.js') }}" defer></script>
 </body>
 </html>

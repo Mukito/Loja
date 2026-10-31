@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento Pix | Casa Nativa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="checkout-page">
+    <header class="site-header"><a class="brand" href="{{ url_for('auth.index') }}"><span class="brand-mark">cn</span><span>casa<span class="brand-light">nativa</span></span></a><div class="checkout-account">Olá, {{ usuario['nome'] }} <span class="online-indicator"><i></i> Online</span></div></header>
+    <main class="payment-main">
+        <div class="payment-success-mark">✓</div><p class="eyebrow">PEDIDO #{{ pedido['id'] }}</p><h1>Seu pedido está reservado.</h1><p class="payment-intro">Pague com Pix para concluir sua compra. O pedido fica aguardando a confirmação da loja.</p>
+        <div class="payment-layout">
+            <section class="pix-card"><div class="pix-card-heading"><span class="pix-symbol">◇</span><div><h2>Pix</h2><p>Escaneie o QR Code com o app do seu banco.</p></div></div><img class="pix-qr" src="{{ url_for('store.pedido_qrcode', pedido_id=pedido['id']) }}" alt="QR Code Pix do pedido {{ pedido['id'] }}"><div class="pix-value"><span>Valor da cobrança</span><strong>{{ total }}</strong></div><label class="pix-copy-label" for="pix-payload">Ou copie o código Pix</label><div class="pix-copy-row"><textarea id="pix-payload" readonly>{{ pedido['pix_payload'] }}</textarea><button class="button copy-pix-button" id="copy-pix" type="button">Copiar</button></div><p id="copy-status" class="copy-status" aria-live="polite"></p></section>
+            <aside class="order-detail-card"><div class="checkout-card-title"><span>✓</span><div><h2>Resumo</h2><p>Pagamento pendente</p></div></div><div class="order-products">{% for item in itens %}<div class="order-product"><span>{{ item['quantidade'] }}× {{ item['nome_produto'] }}</span><strong>{{ 'R$ %.2f'|format(item['preco_centavos'] * item['quantidade'] / 100)|replace('.', ',') }}</strong></div>{% endfor %}</div><div class="summary-total"><span>Total</span><strong>{{ total }}</strong></div><div class="delivery-address"><strong>Entrega para</strong><span>{{ endereco['rua'] }}, {{ endereco['numero'] }}{% if endereco['complemento'] %} — {{ endereco['complemento'] }}{% endif %}<br>{{ endereco['bairro'] }} · {{ endereco['cidade'] }}/{{ endereco['uf'] }} · CEP {{ endereco['cep'] }}</span></div><div class="manual-confirmation"><span class="pending-dot"></span><p>Após o Pix, a loja precisa confirmar o recebimento no banco. Este sistema ainda não confirma pagamentos automaticamente.</p></div><a class="button back-store-button" href="{{ url_for('auth.index') }}">Voltar para a loja <span>→</span></a></aside>
+        </div>
+    </main>
+    <script>
+        localStorage.removeItem('casaNativaCart');
+        document.getElementById('copy-pix').addEventListener('click', async () => {
+            const code = document.getElementById('pix-payload');
+            try { await navigator.clipboard.writeText(code.value); document.getElementById('copy-status').textContent = 'Código Pix copiado.'; }
+            catch (_) { code.select(); document.execCommand('copy'); document.getElementById('copy-status').textContent = 'Código Pix copiado.'; }
+        });
+    </script>
+</body>
+</html>

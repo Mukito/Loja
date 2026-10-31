@@ -12,6 +12,8 @@ def create_app(config_class=Config):
 
     # Registro de módulos/rotas
     from app.routes.auth_routes import auth_bp
+    from app.routes.store_routes import store_bp
     app.register_blueprint(auth_bp)
+    app.register_blueprint(store_bp)
 
     return app
