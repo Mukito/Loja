@@ -4,6 +4,8 @@ Loja virtual demonstrativa feita com Flask e SQLite. A página inicial apresenta
 
 <img width="1907" height="907" alt="image" src="https://github.com/user-attachments/assets/268c4cce-88c8-4535-ab59-008aa454bb9f" />
 <img width="1898" height="824" alt="image" src="https://github.com/user-attachments/assets/f55bcb04-03a9-4fd6-8848-c2dfb38b7606" />
+<img width="1353" height="876" alt="image" src="https://github.com/user-attachments/assets/88fb607f-bfc9-4b30-a85d-00cbbb16312a" />
+<img width="1595" height="840" alt="image" src="https://github.com/user-attachments/assets/1eaffc90-d825-4bbf-8a7a-c5a0d8533b0c" />
 
 
 
